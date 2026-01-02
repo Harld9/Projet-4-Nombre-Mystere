@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Quiz Web</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nombre Mystère by Harold</title>
+    <link rel="stylesheet" href="static/style.css">
 </head>
 
 <body>
@@ -12,132 +13,44 @@
         <a href="/"><img class="logo" src="/static/logo.png" alt="logo"></a>
     </header>
 
-    {{if not (or .IsQuizFacile .IsQuizMoyen .IsQuizDifficile .IsFin)}}
     <div class="menu">
-        <div class="container">
-            <h1>Quiz Questions</h1>
-            <h2>Choississez le Quiz</h2>
-        </div>
-        <form class="quiz1" method="post" action="/quizfacile">
-            <button type="submit">Quiz Facile</button>
-        </form>
-        <form class="quiz2" method="post" action="/quizmoyen">
-            <button type="submit">Quiz Moyen</button>
-        </form>
-        <form class="quiz3" method="post" action="/quizdifficile">
-            <button type="submit">Quiz Difficile</button>
-        </form>
-    </div>
-    {{end}}
+        {{if .IsPlage}}
+        <form class="calcul" method="post" action="/">
+            <h2>Jeu du nombre mystère</h2>
+            <p>Séléctionnez la plage...</p>
+            <input type="text" name="min" required placeholder="Min">
+            <input type="text" name="max" required placeholder="Max">
+            <button type="submit">Calculer</button>
 
-    {{if .IsFin}}
-    <div class="containerfin">
-        <h1>Quiz Terminé !</h1>
-        <p class="messagefinal">{{.MessageFinal}} {{.Score}}</p>
-        <div class="scorefinal">{{.Score}} / 10</div>
-        <a href="/" class="boutonsuivant">Retour accueil</a>
-    </div>
-    {{end}}
 
-    {{if .IsQuizFacile}}
-    <div class="menu">
-        <div class="container">
-            {{ $q := index .QuestionsFaciles .NumQuestion }}
-            <p>Question {{.NumQuestion}} - Score: {{.Score}}</p>
-            <h2>{{ $q.Enonce }}</h2>
-        </div>
-        <form class="reponse" method="post" action="/reponse">
-            <input type="hidden" name="question_id" value="{{.NumQuestion}}">
-            <input type="hidden" name="current_score" value="{{.Score}}">
-            <input type="hidden" name="quiz_type" value="facile">
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 0 }}" class="{{.Couleur0}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 0 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 1 }}" class="{{.Couleur1}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 1 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 2 }}" class="{{.Couleur2}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 2 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 3 }}" class="{{.Couleur3}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 3 }}</button>
+            {{if ne .ErreurMin ""}}<div class="erreur">{{.ErreurMin}}</div>{{end}}
+            {{if ne .ErreurMax ""}}<div class="erreur">{{.ErreurMax}}</div>{{end}}
         </form>
-        {{if .Message}}
-        <div class="zonesuivante">
-            <p class="messagequiz">{{.Message}}</p>
-            <form method="get" action="/quizfacile">
-                <input type="hidden" name="next_question" value="{{.QuestionSuivante}}">
-                <input type="hidden" name="score" value="{{.Score}}">
-                <button type="submit" class="boutonsuivant">Suivant</button>
+        {{end}}
+
+
+        {{if .IsGame}}
+        <form class="calcul" method="post" action="/game">
+            <h2>Jeu du nombre mystère</h2>
+            <p>Le nombre mystère se trouve entre {{.Plage}}</p>
+            <input type="text" name="nbchoisi" required placeholder="Votre nombre">
+            <button type="submit">Calculer</button>
+            {{if ne .MessageStatut ""}}<div class="erreur">{{.MessageStatut}}</div>{{end}}
+        </form>
+        {{end}}
+
+
+        {{if .IsEnd}}
+        <div class="calcul">
+            <h2>Bravo !</h2>
+            <p>{{.MessageFin}}</p>
+            <form method="post" action="/">
+                <input type="hidden" name="reset" value="recommencer">
+                <button type="submit">Recommencer</button>
             </form>
         </div>
         {{end}}
     </div>
-    {{end}}
-
-    {{if .IsQuizMoyen}}
-    <div class="menu">
-        <div class="container">
-            {{ $q := index .QuestionsMoyennes .NumQuestion }}
-            <p>Question {{.NumQuestion}} - Score: {{.Score}}</p>
-            <h2>{{ $q.Enonce }}</h2>
-        </div>
-        <form class="reponse" method="post" action="/reponse">
-            <input type="hidden" name="question_id" value="{{.NumQuestion}}">
-            <input type="hidden" name="current_score" value="{{.Score}}">
-            <input type="hidden" name="quiz_type" value="moyen">
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 0 }}" class="{{.Couleur0}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 0 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 1 }}" class="{{.Couleur1}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 1 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 2 }}" class="{{.Couleur2}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 2 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 3 }}" class="{{.Couleur3}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 3 }}</button>
-        </form>
-        {{if .Message}}
-        <div class="zonesuivante">
-            <p class="messagequiz">{{.Message}}</p>
-            <form method="get" action="/quizmoyen">
-                <input type="hidden" name="next_question" value="{{.QuestionSuivante}}">
-                <input type="hidden" name="score" value="{{.Score}}">
-                <button type="submit" class="boutonsuivant">Suivant</button>
-            </form>
-        </div>
-        {{end}}
-    </div>
-    {{end}}
-
-    {{if .IsQuizDifficile}}
-    <div class="menu">
-        <div class="container">
-            {{ $q := index .QuestionsDifficiles .NumQuestion }}
-            <p>Question {{.NumQuestion}} - Score: {{.Score}}</p>
-            <h2>{{ $q.Enonce }}</h2>
-        </div>
-        <form class="reponse" method="post" action="/reponse">
-            <input type="hidden" name="question_id" value="{{.NumQuestion}}">
-            <input type="hidden" name="current_score" value="{{.Score}}">
-            <input type="hidden" name="quiz_type" value="difficile">
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 0 }}" class="{{.Couleur0}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 0 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 1 }}" class="{{.Couleur1}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 1 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 2 }}" class="{{.Couleur2}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 2 }}</button>
-            <button type="submit" name="choix_utilisateur" value="{{ index $q.Choix 3 }}" class="{{.Couleur3}}" {{if
-                .Message}}disabled{{end}}>{{ index $q.Choix 3 }}</button>
-        </form>
-        {{if .Message}}
-        <div class="zonesuivante">
-            <p class="messagequiz">{{.Message}}</p>
-            <form method="get" action="/quizdifficile">
-                <input type="hidden" name="next_question" value="{{.QuestionSuivante}}">
-                <input type="hidden" name="score" value="{{.Score}}">
-                <button type="submit" class="boutonsuivant">Suivant</button>
-            </form>
-        </div>
-        {{end}}
-    </div>
-    {{end}}
-
 </body>
 
 </html>
