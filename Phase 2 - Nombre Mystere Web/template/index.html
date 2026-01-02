@@ -15,7 +15,7 @@
 
     <div class="menu">
         {{if .IsPlage}}
-        <form class="calcul" method="post" action="/">
+        <form class="jeu" method="post" action="/">
             <h2>Jeu du nombre mystère</h2>
             <p>Séléctionnez la plage...</p>
             <input type="text" name="min" required placeholder="Min">
@@ -30,7 +30,7 @@
 
 
         {{if .IsGame}}
-        <form class="calcul" method="post" action="/game">
+        <form class="jeu" method="post" action="/game">
             <h2>Jeu du nombre mystère</h2>
             <p>Le nombre mystère se trouve entre {{.Plage}}</p>
             <input type="text" name="nbchoisi" required placeholder="Votre nombre">
@@ -41,7 +41,7 @@
 
 
         {{if .IsEnd}}
-        <div class="calcul">
+        <div class="jeu">
             <h2>Bravo !</h2>
             <p>{{.MessageFin}}</p>
             <form method="post" action="/">

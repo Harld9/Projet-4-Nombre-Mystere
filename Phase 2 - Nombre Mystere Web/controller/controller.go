@@ -136,10 +136,8 @@ func End(w http.ResponseWriter, r *http.Request) {
 		data.MessageFin = fmt.Sprintf("🚀 Propre, efficace, carré. T'as géré en %d coups!", Tentative)
 	case Tentative <= 10:
 		data.MessageFin = fmt.Sprintf("👏 Pas mal, mais peut mieux faire. T'as gagné quand même. En %d coup", Tentative)
-	case Tentative <= 10:
-		data.MessageFin = fmt.Sprintf("Peut mieux faire, tu as réussi en %d coups", Tentative)
 	default:
-		return
+		data.MessageFin = fmt.Sprintf("😅 Enfin ! J'ai failli m'endormir devant mon écran... Mais bravo. En %d coups", Tentative)
 	}
 	tmpl := template.Must(template.ParseFiles("template/index.html"))
 	tmpl.Execute(w, data)
